@@ -43,6 +43,7 @@ func main() {
 		Addr:    app.config.Address,
 		Handler: middlewares.Logging(app.router),
 	}
+
 	err := server.ListenAndServe()
 	if err != nil {
 		panic(err)
