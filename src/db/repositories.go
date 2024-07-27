@@ -4,39 +4,39 @@ import (
 	"gorm.io/gorm"
 )
 
-type ITodoService interface {
+type ITodoRepository interface {
 	GetAllTodos() []Todo
 	GetTodoById(todoId int) *Todo
 	CreateTodo(data CreateTodoDto) *Todo
 	DeleteTodo(todoId int)
 }
 
-type TodoService struct {
+type TodoRepository struct {
 	database *gorm.DB
 }
 
-func NewTodoService(database *gorm.DB) *TodoService {
-	newService := TodoService{database: database}
+func NewTodoRepository(database *gorm.DB) *TodoRepository {
+	newService := TodoRepository{database: database}
 	return &newService
 }
 
-func (service *TodoService) GetAllTodos() []Todo {
+func (service *TodoRepository) GetAllTodos() []Todo {
 	var todos []Todo
 	service.database.Raw("SELECT * FROM todos").Scan(&todos)
 	return todos
 }
 
-func (service *TodoService) CreateTodo(data CreateTodoDto) *Todo {
+func (service *TodoRepository) CreateTodo(data CreateTodoDto) *Todo {
 	newTodo := Todo{Title: data.Title, Description: data.Description, Deadline: data.Deadline}
 	service.database.Create(&newTodo)
 	return &newTodo
 }
 
-func (service *TodoService) DeleteTodo(todoId int) {
+func (service *TodoRepository) DeleteTodo(todoId int) {
 	service.database.Exec("DELETE FROM todos WHERE id = ?", todoId)
 }
 
-func (service *TodoService) GetTodoById(todoId int) *Todo {
+func (service *TodoRepository) GetTodoById(todoId int) *Todo {
 	var todo Todo
 	service.database.Raw("SELECT id FROM todos WHERE id = ?", todoId).Scan(&todo)
 

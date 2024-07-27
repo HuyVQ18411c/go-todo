@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -13,12 +12,12 @@ import (
 )
 
 type TodoController struct {
-	service db.ITodoService
+	service db.ITodoRepository
 }
 
 func NewTodoController(database *gorm.DB) *TodoController {
 	controller := TodoController{}
-	controller.service = db.NewTodoService(database)
+	controller.service = db.NewTodoRepository(database)
 	return &controller
 }
 
@@ -50,7 +49,6 @@ func (controller *TodoController) deleteTodo(response http.ResponseWriter, reque
 	if err != nil {
 		panic(err)
 	}
-	log.Print("#### asd", id)
 	todo := controller.service.GetTodoById(id)
 	if todo == nil {
 		response.WriteHeader(http.StatusNotFound)
